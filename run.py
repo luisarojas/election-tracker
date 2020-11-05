@@ -5,13 +5,14 @@ import random
 import smtplib
 import ssl
 import socket
+import sys
 from datetime import datetime
 from bs4 import BeautifulSoup
 from pathlib import Path
 from email.message import EmailMessage
 from user_agents import USER_AGENTS
 
-testing_env = False
+testing_env = True
 
 data_filename = '.db.json'
 seconds_to_check = 900  # sleep for 15 minutes before trying again
@@ -200,14 +201,18 @@ def check_changes():
 	"""
 
 	if changed or testing_env:
-		try:
-			if Path('env.py').exists():
-				from env import ENV
-
+		if Path('env.py').exists():
+			from env import ENV
+			try:
 				recipient_emails_str = ', '.join(ENV['recipient']['emails'])
 				if testing_env: recipient_emails_str = ENV['recipient']['emails'][0]
 				print(f'There are changes\nSending notification e-mail notification to: {recipient_emails_str}')
-				
+			except Exception as e:
+				print(e)
+				print('Error: Unable to properly read recipient emails from env.py file')
+				sys.exit(-1)
+			
+			try:
 				port = 465  # For SSL
 				smtp_server = "smtp.gmail.com"
 				sender_email = ENV['sender']['email']
@@ -226,8 +231,7 @@ def check_changes():
 				with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
 					server.login(sender_email, password)
 					server.send_message(message)
-
-		except Exception as e: print('\n', e) # No biggie if the e-mail is not sent
+			except Exception as e: print(e)
 
 	else: print('--> No changes <--')
 
