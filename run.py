@@ -12,7 +12,7 @@ from pathlib import Path
 from email.message import EmailMessage
 from user_agents import USER_AGENTS
 
-testing_env = True
+testing_env = False
 
 data_filename = '.db.json'
 seconds_to_check = 900  # sleep for 15 minutes before trying again
