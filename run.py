@@ -11,7 +11,7 @@ from pathlib import Path
 from email.message import EmailMessage
 from user_agents import USER_AGENTS
 
-testing_env = False
+testing_env = True
 data = None
 seconds_to_check = 900  # sleep for 15 minutes before trying again
 
@@ -204,9 +204,9 @@ def check_changes():
 			if Path('env.py').exists():
 				from env import ENV
 
-				receiver_emails_str = ', '.join(ENV['receiver']['emails'])
-				if testing_env: receiver_emails_str = ENV['receiver']['emails'][0]
-				print(f'There are changes.\nSending notification e-mail notification to: {receiver_emails_str}')
+				recipient_emails_str = ', '.join(ENV['recipient']['emails'])
+				if testing_env: recipient_emails_str = ENV['recipient']['emails'][0]
+				print(f'There are changes\nSending notification e-mail notification to: {recipient_emails_str}')
 				
 				port = 465  # For SSL
 				smtp_server = "smtp.gmail.com"
@@ -214,10 +214,11 @@ def check_changes():
 				password = ENV['sender']['password']
 
 				message = EmailMessage()
-				message['Subject'] = '🆕 Election Update'
-				if testing_env: message['Subject'] += ' - Test'
+				subject = '🆕 Election Update'
+				if testing_env: subject += ' - Test'
+				message['Subject'] = subject
 				message['From'] = sender_email
-				message['To'] = receiver_emails_str
+				message['To'] = recipient_emails_str
 				message.set_content(email_message)
 				message.add_alternative(html_email_message, subtype='html')
 
@@ -233,10 +234,15 @@ def check_changes():
 	print(f'\nRunning every {int(seconds_to_check/60)} minute(s)')
 	print(f'Last checked: {current_time}', '\n')
 
-while True:
+if __name__ == "__main__":
 
-	load_prev_db()
-	check_changes()
-	update_db()
+	if testing_env:
+		print('\033[93m*** IN TESTING ENVIRONMENT ***\033[0m')
+	
+	while True:
 
-	time.sleep(seconds_to_check)
+		load_prev_db()
+		check_changes()
+		update_db()
+
+		time.sleep(seconds_to_check)
