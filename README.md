@@ -12,7 +12,7 @@
 
 <p align="center">
 <img src="https://img.shields.io/github/languages/count/luisarojas/elections-tracker.svg?style=flat" alt="languages-badge"/>
-<img src="https://img.shields.io/github/license/luisarojas/elections-tracker.svg?style=flat" alt="license-badge"/>
+<img src="https://img.shields.io/github/license/luisarojas/elections-tracker" alt="license-badge">
 <img src="https://img.shields.io/github/repo-size/luisarojas/elections-tracker" alt="repo-size-badge">
 <img src="https://img.shields.io/github/last-commit/luisarojas/elections-tracker" alt="last-commit-badge">
 <img src="https://img.shields.io/github/issues-raw/luisarojas/elections-tracker" alt="open-issues-badge">
