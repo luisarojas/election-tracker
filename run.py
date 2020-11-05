@@ -24,7 +24,7 @@ def load_prev_db():
 
 def update_db():
 	global data
-	with open(data_filename) as f:
+	with open(data_filename, 'w') as f:
 		json.dump(data, f)
 
 def check_changes():
