@@ -12,19 +12,19 @@ from email.message import EmailMessage
 from user_agents import USER_AGENTS
 
 testing_env = False
-data = None
+
+data_filename = '.db.json'
 seconds_to_check = 900  # sleep for 15 minutes before trying again
+data = None
 
 def load_prev_db():
-
 	global data
-	with open('db.json') as f:
+	with open(data_filename) as f:
 		data = json.load(f)
 
 def update_db():
-
 	global data
-	with open('db.json', 'w') as f:
+	with open(data_filename) as f:
 		json.dump(data, f)
 
 def check_changes():

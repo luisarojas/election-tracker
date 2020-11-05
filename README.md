@@ -18,8 +18,6 @@
 <img src="https://img.shields.io/github/issues-raw/luisarojas/elections-tracker" alt="open-issues-badge">
 </p>
 
-
-
 ## Overview
 
 To avoid a heart-attack induced by refreshing the election results (way) too often, I decided to, instead, create a web scraper that could check for updates for me.
@@ -43,7 +41,7 @@ The script uses [ABC News](https://abcnews.go.com/Elections) as its source and c
 
 No command-line inputs are required; only your `env.py` is needed.
 
-### What should your `env.py` look like?
+**What should your `env.py` look like?**
 
 ```python
 ENV = {
@@ -58,6 +56,13 @@ ENV = {
 ```
 <p style="color: grey;">Note: If using Gmail, you should enable the setting to allow access from "less secure apps".</p>
 
+### Testing Environment
+
+When the `testing_env` variable is set to `True`:
+
+* An e-mail will always be sent, regardless of if there is a change or not
+* Only the first recipient in the `emails` list will receive the e-mail.
+* The e-mail subject will indicate whether the e-mail is a test or not.
 
 ### Execution
 
