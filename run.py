@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 from email.message import EmailMessage
 
-testing_env = True
+testing_env = False
 seconds_to_check = 900  # sleep for 15 minutes before trying again
 
 data_filename = '.db.json'
