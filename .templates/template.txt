@@ -1,0 +1,14 @@
+Presidency (270 to win)
+----------
+* Biden: [biden-description]
+* Trump: [dump-description]
+
+House (218 for majority)
+-----
+* Dem: [dem-house-description]
+* Gop: [gop-house-description]
+
+Senate (51 for majority)
+------
+* Dem: [dem-senate-description]
+* Gop: [gop-senate-description]
