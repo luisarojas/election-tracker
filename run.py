@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 from email.message import EmailMessage
 
-testing_env = False
+testing_env = True
 seconds_to_check = 900  # sleep for 15 minutes before trying again
 
 data_filename = '.db.json'
@@ -174,7 +174,7 @@ def check_changes():
 			try:
 				recipient_emails_str = ', '.join(ENV['recipient']['emails'])
 				if testing_env: recipient_emails_str = ENV['recipient']['emails'][0]
-				print(f'There are changes\nSending notification e-mail notification to: {recipient_emails_str}')
+				print(f'\033[92m*** There are changes ***\033[0m\nSending notification e-mail notification to: {recipient_emails_str}')
 			except Exception as e:
 				print(e)
 				print('Error: Unable to properly read recipient emails from env.py file')
@@ -201,14 +201,14 @@ def check_changes():
 					server.send_message(message)
 			except Exception as e: print(e)
 
-	else: print('*** No changes ***')
+	else: print('*** No changes identified ***')
 
 	print(f'\nRunning every {int(seconds_to_check/60)} minute(s)')
 	print(f'Last checked: {current_time}', '\n')
 
 if __name__ == "__main__":
 
-	if testing_env: print('\033[93m*** IN TESTING ENVIRONMENT ***\033[0m')
+	if testing_env: print('\033[93m\033[1m' + ('-'*30) + '\n*** IN TESTING ENVIRONMENT ***\n' + ('-'*30) + '\033[0m')
 	
 	while True:
 
