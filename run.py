@@ -6,13 +6,13 @@ import smtplib
 import ssl
 import socket
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from pathlib import Path
 from email.message import EmailMessage
 
-testing_env = True
-seconds_to_check = 900  # sleep for 15 minutes before trying again
+testing_env = False
+seconds_to_check = 300  # sleep for 5 minutes before trying again
 
 data_filename = '.db.json'
 data = None
@@ -29,16 +29,16 @@ def update_db():
 
 def check_changes():
 
-	now = datetime.now()
-	current_time = now.strftime('%b %d, %Y at %I:%M %p')
+	now = datetime.now() - timedelta(hours=5)
+	current_time = now.strftime('%b %d, %Y at %I:%M %p EST')
 
 	user_agents = [
-		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15',
-		'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',
-		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
-		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:77.0) Gecko/20100101 Firefox/77.0',
-		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
-		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15',
+			'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:77.0) Gecko/20100101 Firefox/77.0',
+			'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
 	]
 
 	headers = {'User-Agent': random.choice(user_agents)}
@@ -77,7 +77,7 @@ def check_changes():
 	else:
 		description_message = f'No change ({biden_count})'
 		html_message = html_message.replace('[biden-color]', 'no-change-color') # grey
-	
+
 	if (biden_count >= 270): description_message += ' - WIN! 🎉'
 
 	html_message = html_message.replace('[biden-description]', description_message)
@@ -92,15 +92,15 @@ def check_changes():
 	else:
 		description_message = f'No change ({dump_count})'
 		html_message = html_message.replace('[dump-color]', 'no-change-color') # grey
-	
+
 	if (dump_count >= 270): description_message += ' - win'
-	
+
 	html_message = html_message.replace('[dump-description]', description_message)
 	plain_text_message = plain_text_message.replace('[dump-description]', description_message)
 
 
 
-	# ------------------------------ Check house ------------------------------ 
+	# ------------------------------ Check house ------------------------------
 	# Dem
 	if dem_house_count != data['house']['dem']:
 		data_changed = True
@@ -110,12 +110,12 @@ def check_changes():
 	else:
 		description_message = f'No change ({dem_house_count})'
 		html_message = html_message.replace('[dem-house-color]', 'no-change-color') # grey
-	
+
 	if (dem_house_count >= 218): description_message += ' - MAJORITY! 🎉'
-	
+
 	html_message = html_message.replace('[dem-house-description]', description_message)
 	plain_text_message = plain_text_message.replace('[dem-house-description]', description_message)
-	
+
 	# Gop
 	if gop_house_count != data['house']['gop']:
 		data_changed = True
@@ -143,7 +143,7 @@ def check_changes():
 	else:
 		description_message = f'No change ({dem_senate_count})'
 		html_message = html_message.replace('[dem-senate-color]', 'no-change-color') # grey
-	
+
 	if (dem_senate_count >= 51): description_message += ' - MAJORITY 🎉'
 
 	html_message = html_message.replace('[dem-senate-description]', description_message)
@@ -165,9 +165,9 @@ def check_changes():
 	plain_text_message = plain_text_message.replace('[gop-senate-description]', description_message).replace('&rarr;', '->')
 
 	# ------------------------------------------------------------------------------------------
-	
+
 	print(plain_text_message, '\n')
-	
+
 	if data_changed or testing_env:
 		if Path('env.py').exists():
 			from env import ENV
@@ -179,7 +179,7 @@ def check_changes():
 				print(e)
 				print('Error: Unable to properly read recipient emails from env.py file')
 				sys.exit(-1)
-			
+
 			try:
 				port = 465  # For SSL
 				smtp_server = "smtp.gmail.com"
@@ -208,8 +208,8 @@ def check_changes():
 
 if __name__ == "__main__":
 
-	if testing_env: print('\033[93m\033[1m' + ('-'*30) + '\n*** IN TESTING ENVIRONMENT ***\n' + ('-'*30) + '\033[0m')
-	
+	if testing_env: print('\033[93m\033[1m*** IN TESTING ENVIRONMENT ***\033[0m')
+
 	while True:
 
 		load_prev_db()
